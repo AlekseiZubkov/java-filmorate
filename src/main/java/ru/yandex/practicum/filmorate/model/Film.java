@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.annotations.MinimumDate;
 
@@ -9,6 +10,7 @@ import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
 @Data
+@Builder
 public class Film {
     private int id;
     @NotBlank(message = "Имя не задано")

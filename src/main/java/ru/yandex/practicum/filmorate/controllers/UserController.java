@@ -22,9 +22,9 @@ public class UserController {
 
     @GetMapping
     public List<User> findAll() {
+        User.builder().login("1");
         log.debug("Текущее количество пользователей: {}", users.size());
-        List<User> list = new ArrayList<User>(users.values());
-        return list;
+        return new ArrayList<User>(users.values());
     }
 
     @PostMapping
