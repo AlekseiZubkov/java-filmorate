@@ -52,20 +52,4 @@ public class UserController {
             throw new ValidationException("Нет такого пользователя в списке");
         }
     }
-
-    private boolean validUser(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank()) {
-            throw new ValidationException("Адрес электронной почты не может быть пустым.");
-        }
-        if (user.getLogin() == null || user.getEmail().isBlank() || user.getLogin().matches(".*\\s+.*")) {
-            throw new ValidationException("Логин   не может быть пустым и содержать пробелы");
-        }
-        if (user.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Дата рождения не может быть позже ");
-        }
-        if (user.getName() == null || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-        }
-        return true;
-    }
 }

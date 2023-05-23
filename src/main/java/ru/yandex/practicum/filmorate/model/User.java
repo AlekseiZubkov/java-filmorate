@@ -23,5 +23,4 @@ public class User {
     private String name;
     @Past(message = "День рождения в будущем")
     private LocalDate birthday;
-
 }
