@@ -60,6 +60,7 @@ class UserControllerTest {
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertEquals(1, violations.size(), "Валидация некорректна");
     }
+
     @Test
     void emptyNameTest() {
         User user = getValidUser();
@@ -67,6 +68,7 @@ class UserControllerTest {
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertEquals(0, violations.size(), "Валидация некорректна");
     }
+
     @Test
     void nullNameTest() {
         User user = getValidUser();
@@ -74,6 +76,7 @@ class UserControllerTest {
         Set<ConstraintViolation<User>> violations = validator.validate(user);
         assertEquals(0, violations.size(), "Валидация некорректна");
     }
+
     @Test
     void emptyRequestTest() {
         User user = User.builder()
