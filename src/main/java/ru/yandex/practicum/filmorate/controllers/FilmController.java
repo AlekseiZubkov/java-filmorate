@@ -19,6 +19,7 @@ public class FilmController {
     private final Map<Integer, Film> films = new HashMap<Integer, Film>();
     private int id;
 
+
     @GetMapping
     public List<Film> findAll() {
         log.debug("Текущее количество фильмов: {}", films.size());
@@ -28,7 +29,7 @@ public class FilmController {
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
         log.debug("Добавили фильм: {}", film);
-        id++;
+        ++id;
         film.setId(id);
         films.put(id, film);
         return film;

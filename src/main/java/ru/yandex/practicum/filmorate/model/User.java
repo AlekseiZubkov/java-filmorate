@@ -8,11 +8,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
 public class User {
-    private int id;
+    private long id;
     @NotBlank(message = "Email пуст")
     @Email(message = "Email не верен")
     private String email;
@@ -23,4 +24,5 @@ public class User {
     private String name;
     @Past(message = "День рождения в будущем")
     private LocalDate birthday;
+    Set<Long> friends;
 }

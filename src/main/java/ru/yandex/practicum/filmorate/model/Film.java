@@ -8,6 +8,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 @Builder
@@ -21,4 +22,5 @@ public class Film {
     private LocalDate releaseDate;
     @Min(1)
     private int duration;
+    Set<Long> friends;
 }
