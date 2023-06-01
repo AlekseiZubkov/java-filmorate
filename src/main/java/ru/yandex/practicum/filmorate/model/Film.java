@@ -22,5 +22,5 @@ public class Film {
     private LocalDate releaseDate;
     @Min(1)
     private int duration;
-    Set<Long> friends;
+    private Set<Long> friends;
 }

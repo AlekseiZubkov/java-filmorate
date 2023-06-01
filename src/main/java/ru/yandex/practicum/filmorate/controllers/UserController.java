@@ -37,13 +37,26 @@ public class UserController {
     }
     @GetMapping("{id}")
     public User findPost(@PathVariable("id") long id) {
-        log.debug("щем пользователя с ID: {}", id);
+        log.debug("Ищем пользователя с ID: {}", id);
         return service.getUserById(id);
 }
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriendToUser(@PathVariable("id") long id, @PathVariable("friendId")long friendId) {
         log.debug("id={},friendId={}",id,friendId);
         service.addFriend(id, friendId);
+    }
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFriendToUser(@PathVariable("id") long id, @PathVariable("friendId")long friendId) {
+        log.debug("id={},friendId={}",id,friendId);
+        service.deleteFriend(id, friendId);
+    }
+    @GetMapping("/{id}/friends")
+    public List<User> getUserFriends(@PathVariable long id) {
+        return service.getUserFriends(id);
+    }
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getUserCommonFriends(@PathVariable  long id, @PathVariable long otherId) {
+        return service.getCommonFriends(id, otherId);
     }
 }
 
