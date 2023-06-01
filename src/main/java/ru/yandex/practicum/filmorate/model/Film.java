@@ -13,7 +13,7 @@ import java.util.Set;
 @Data
 @Builder
 public class Film {
-    private int id;
+    private long id;
     @NotBlank(message = "Имя не задано")
     private String name;
     @Size(max = 200, message = "Описание слишком длинное")
@@ -22,5 +22,5 @@ public class Film {
     private LocalDate releaseDate;
     @Min(1)
     private int duration;
-    private Set<Long> friends;
+    private Set<Long> likes;
 }

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidationException;
@@ -10,7 +11,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -39,10 +40,13 @@ public class UserService {
         if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
+        if (user.getFriends() == null) {        //если списка нет, то присвоить пустой список
+            user.setFriends(new HashSet<>());
+        }
         if (checkInList(user.getId())) {
             userStorage.update(user);
         } else {
-            throw new ValidationException("Нет такого пользователя в списке");
+            throw new UserNotFoundException("Нет такого пользователя в списке");
         }
     }
 
@@ -77,15 +81,23 @@ public class UserService {
     }
 
     public List<User> getCommonFriends(long id, long otherId) {     // Находим общих друзей, и складываем в List
-        return userStorage.getUsers().stream()
+        checkInList(id);
+        checkInList(otherId);
+         List<User> list = userStorage.getUsers().stream()
                 .filter(x -> userStorage.getUsersMap().get(id).getFriends()
                 .contains(x.getId())).filter(o -> userStorage.getUsersMap().get(otherId).getFriends()
                 .contains(o.getId())).collect(Collectors.toList());
+        log.debug("Список друзей: {}", list);
+        return list;
     }
     private boolean checkInList (long id){      //Проверка, что пользователь с таким ID есть в списке
         if (userStorage.getUsersMap().containsKey(id)) {
             return true;
-        } else {
+        }
+        if (id <= 0){
+            throw new ValidationException(String.format("Некорректный %d", id));
+        }
+        else {
             throw new UserNotFoundException(String.format("Пост № %d не найден", id));
         }
     }

@@ -13,12 +13,9 @@ import java.util.Map;
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
 
-
     public void create(User user) {
-
         users.put(user.getId(), user);
     }
-
 
     public void update(User user) {
         users.put(user.getId(), user);
@@ -26,7 +23,7 @@ public class InMemoryUserStorage implements UserStorage {
 
 
     public void delete(User user) {
-
+        users.remove(user.getId());
     }
 
     public List<User> getUsers() {

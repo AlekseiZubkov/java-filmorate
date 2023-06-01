@@ -7,12 +7,15 @@ import java.util.Map;
 
 public interface FilmStorage {
 
-    void add (Film film);
+    void create(Film film);
 
     void update (Film film);
 
     void delete (Film film);
-    List<Film> getFilmsList();
+    List<Film> getFilms();
+
 
     Film getFilmById(long id);
+
+    Map<Long, Film> getFilmsMap();
 }
