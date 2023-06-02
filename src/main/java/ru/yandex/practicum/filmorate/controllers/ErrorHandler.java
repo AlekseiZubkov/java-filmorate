@@ -19,7 +19,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse NotFoundException(final NotFoundException e) {
+    public ErrorResponse notFoundException(final NotFoundException e) {
         return new ErrorResponse(
                 e.getMessage()
         );
