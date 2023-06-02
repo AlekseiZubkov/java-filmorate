@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class UserService {
         }
         user.setId(++id);
         userStorage.create(user);
-        log.info("Создали пользователя: {}",user);
+        log.info("Создали пользователя: {}", user);
         return user;
     }
 
@@ -45,43 +46,42 @@ public class UserService {
         }
         if (checkInList(user.getId())) {
             userStorage.update(user);
-            log.info("Обновили пользователя: {}",user);
+            log.info("Обновили пользователя: {}", user);
         } else {
             throw new NotFoundException("Нет такого пользователя в списке");
         }
     }
 
-    public void deleteUser(User user) {
-        userStorage.delete(user);
-    }
-
     public User getUserById(long id) {
-        return userStorage.getUsers().stream()
-                .filter(u -> u.getId()==id)
-                .findFirst()
-                .orElseThrow(() -> new NotFoundException(String.format("Пользователь № %d не найден", id)));
+        if (!userStorage.getUsersMap().containsKey(id)) {
+            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
+        }
+        return userStorage.getUserById(id);
     }
 
 
     public void addFriend(long id, long friendId) {
-        if (friendId <= 0|| id <=0 ){
+        if (friendId <= 0 || id <= 0) {
             throw new NotFoundException(String.format("Пользователь № %d не найден", id));
         }
-        if (checkInList(id) && checkInList(id)){
+        if (checkInList(id) && checkInList(id)) {
             userStorage.getUsersMap().get(id).getFriends().add(friendId);
             userStorage.getUsersMap().get(friendId).getFriends().add(id);
+            log.info("Добавили в друзья  к пользователю с ID {},пользователя c ID {}  ", id, friendId);
         }
     }
 
     public void deleteFriend(long id, long friendId) {
         userStorage.getUsersMap().get(id).getFriends().remove(friendId);
         userStorage.getUsersMap().get(friendId).getFriends().remove(id);
+        log.info("Удалили из друзей   пользователя с ID {},пользователя c ID {}  ", id, friendId);
     }
 
     public List<User> getUserFriends(long id) {
-            return userStorage.getUsers().stream()
-                    .filter(o -> userStorage.getUserById(id).getFriends().contains(o.getId()))
-                    .collect(Collectors.toList());
+        log.info("Вернули список друзей   пользователя с ID {}", id);
+        return userStorage.getUsers().stream()
+                .filter(o -> userStorage.getUserById(id).getFriends().contains(o.getId()))
+                .collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(long id, long otherId) {     // Находим общих друзей, и складываем в List
@@ -89,16 +89,16 @@ public class UserService {
         checkInList(otherId);
         List<User> list = userStorage.getUsers().stream()
                 .filter(x -> userStorage.getUsersMap().get(id).getFriends()
-                .contains(x.getId())).filter(o -> userStorage.getUsersMap().get(otherId).getFriends()
-                .contains(o.getId())).collect(Collectors.toList());
+                        .contains(x.getId())).filter(o -> userStorage.getUsersMap().get(otherId).getFriends()
+                        .contains(o.getId())).collect(Collectors.toList());
         log.debug("Список общих друзей: {}", list);
         return list;
     }
-    private boolean checkInList (long id){      //Проверка, что пользователь с таким ID есть в списке
-        if (userStorage.getUsersMap().containsKey(id) ) {
+
+    private boolean checkInList(long id) {      //Проверка, что пользователь с таким ID есть в списке
+        if (userStorage.getUsersMap().containsKey(id)) {
             return true;
-        }
-        else {
+        } else {
             throw new NotFoundException(String.format("Пользователь № %d не найден", id));
         }
     }

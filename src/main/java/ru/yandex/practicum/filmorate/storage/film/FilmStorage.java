@@ -9,9 +9,10 @@ public interface FilmStorage {
 
     void create(Film film);
 
-    void update (Film film);
+    void update(Film film);
 
-    void delete (Film film);
+    void delete(Film film);
+
     List<Film> getFilms();
 
 

@@ -16,6 +16,7 @@ public class ErrorHandler {
     public ErrorResponse handleValidationException(ValidationException e) {
         return new ErrorResponse(String.format("Ошибка валидации %s ", e.getMessage()));
     }
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse NotFoundException(final NotFoundException e) {

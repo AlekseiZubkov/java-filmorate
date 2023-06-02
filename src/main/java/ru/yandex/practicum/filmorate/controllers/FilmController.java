@@ -3,12 +3,10 @@ package ru.yandex.practicum.filmorate.controllers;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
@@ -42,19 +40,19 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable long id) {
-        log.info("Пришел Get запрос /films/{}",id);
+        log.info("Пришел Get запрос /films/{}", id);
         return service.getFilmById(id);
     }
 
     @PutMapping("/{id}/like/{filmId}")
     public void addLikeByFilm(@PathVariable long id, @PathVariable long filmId) {
-        log.info("Пришел Put запрос /films/{}/like/{}",id,filmId);
+        log.info("Пришел Put запрос /films/{}/like/{}", id, filmId);
         service.addLikeByFilm(id, filmId);
     }
 
     @DeleteMapping("/{id}/like/{filmId}")
     public void deleteLikeByFilm(@PathVariable long id, @PathVariable long filmId) {
-        log.info("Пришел Delete запрос /films/{}/like/{}",id,filmId);
+        log.info("Пришел Delete запрос /films/{}/like/{}", id, filmId);
         service.deleteLikeByFilm(id, filmId);
     }
 
@@ -62,22 +60,5 @@ public class FilmController {
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
         log.info("Пришел Get запрос /films/popular");
         return service.getPopularFilms(count);
-    }
-
-
-    private boolean validFilm(Film film) {
-        if (film.getName() == null || film.getName().isBlank()) {
-            throw new ValidationException("Имя не может быть пустым.");
-        }
-        if (film.getDescription().length() > 200) {
-            throw new ValidationException("Описание не может быть пустым");
-        }
-        if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
-            throw new ValidationException("Дата релиза не может быть раньше");
-        }
-        if (film.getDuration() <= 0) {
-            throw new ValidationException("Продолжительность фильма отрицательная");
-        }
-        return true;
     }
 }
