@@ -2,12 +2,10 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,21 +19,22 @@ public class FilmService {
     public List<Film> findAll() {
         return filmStorage.getFilms();
     }
-    public Film create(Film film){
+    public void create(Film film){
         if (film.getLikes() == null) {        //если списка нет, то присвоить пустой список
             film.setLikes(new HashSet<>());
         }
         ++id;
         film.setId(id);
         filmStorage.create(film);
-        return film;
     }
-    public Film update(Film film) {
+    public void update(Film film) {
+        if (film.getLikes() == null) {        //если списка нет, то присвоить пустой список
+            film.setLikes(new HashSet<>());
+        }
         if (filmStorage.getFilmsMap().containsKey(film.getId())) {
             filmStorage.getFilmsMap().put(film.getId(), film);
-            return film;
         } else {
-            throw new ValidationException("Нет такого фильма в списке");
+            throw new NotFoundException("Нет такого фильма в списке");
         }
     }
     public void deleteUser(Film film) {
@@ -46,7 +45,7 @@ public class FilmService {
         return filmStorage.getFilms().stream()
                 .filter(u -> u.getId()==id)
                 .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format("Фильм № %d не найден", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Фильм № %d не найден", id)));
     }
 
 
@@ -68,7 +67,7 @@ public class FilmService {
         if (filmStorage.getFilmsMap().containsKey(id)) {
             return true;
         } else {
-            throw new UserNotFoundException(String.format("Фильм № %d не найден", id));
+            throw new NotFoundException(String.format("Фильм № %d не найден", id));
         }
     }
 

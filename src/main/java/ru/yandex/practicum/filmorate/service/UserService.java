@@ -3,8 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.ValidationException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
@@ -46,7 +45,7 @@ public class UserService {
         if (checkInList(user.getId())) {
             userStorage.update(user);
         } else {
-            throw new UserNotFoundException("Нет такого пользователя в списке");
+            throw new NotFoundException("Нет такого пользователя в списке");
         }
     }
 
@@ -58,11 +57,14 @@ public class UserService {
         return userStorage.getUsers().stream()
                 .filter(u -> u.getId()==id)
                 .findFirst()
-                .orElseThrow(() -> new UserNotFoundException(String.format("Пользователь № %d не найден", id)));
+                .orElseThrow(() -> new NotFoundException(String.format("Пользователь № %d не найден", id)));
     }
 
 
     public void addFriend(long id, long friendId) {
+        if (friendId <= 0|| id <=0 ){
+            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
+        }
         if (checkInList(id) && checkInList(id)){
             userStorage.getUsersMap().get(id).getFriends().add(friendId);
             userStorage.getUsersMap().get(friendId).getFriends().add(id);
@@ -91,14 +93,11 @@ public class UserService {
         return list;
     }
     private boolean checkInList (long id){      //Проверка, что пользователь с таким ID есть в списке
-        if (userStorage.getUsersMap().containsKey(id)) {
+        if (userStorage.getUsersMap().containsKey(id) ) {
             return true;
         }
-        if (id <= 0){
-            throw new ValidationException(String.format("Некорректный %d", id));
-        }
         else {
-            throw new UserNotFoundException(String.format("Пост № %d не найден", id));
+            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
         }
     }
 
