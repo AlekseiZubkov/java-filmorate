@@ -32,6 +32,7 @@ public class UserService {
         }
         user.setId(++id);
         userStorage.create(user);
+        log.info("Создали пользователя: {}",user);
         return user;
     }
 
@@ -44,6 +45,7 @@ public class UserService {
         }
         if (checkInList(user.getId())) {
             userStorage.update(user);
+            log.info("Обновили пользователя: {}",user);
         } else {
             throw new NotFoundException("Нет такого пользователя в списке");
         }
@@ -85,11 +87,11 @@ public class UserService {
     public List<User> getCommonFriends(long id, long otherId) {     // Находим общих друзей, и складываем в List
         checkInList(id);
         checkInList(otherId);
-         List<User> list = userStorage.getUsers().stream()
+        List<User> list = userStorage.getUsers().stream()
                 .filter(x -> userStorage.getUsersMap().get(id).getFriends()
                 .contains(x.getId())).filter(o -> userStorage.getUsersMap().get(otherId).getFriends()
                 .contains(o.getId())).collect(Collectors.toList());
-        log.debug("Список друзей: {}", list);
+        log.debug("Список общих друзей: {}", list);
         return list;
     }
     private boolean checkInList (long id){      //Проверка, что пользователь с таким ID есть в списке

@@ -55,8 +55,12 @@ public class FilmService {
         }
     }
     public void deleteLikeByFilm(long id, long userId) {
-            filmStorage.getFilmsMap().remove(id);
+        if(userId<=0){
+            throw new NotFoundException("Нет такого пользователя в списке");
+        }
+        filmStorage.getFilmsMap().get(id).getLikes().remove(userId);
     }
+
     public List<Film> getPopularFilms(int count) {
                  return filmStorage.getFilms().stream()
                          .sorted((f1,f2)->f2.getLikes().size() - f1.getLikes().size())

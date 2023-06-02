@@ -9,10 +9,7 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RestController
@@ -24,47 +21,48 @@ public class FilmController {
 
     @GetMapping
     public List<Film> findAll() {
+        log.info("Пришел GET запрос /films");
         log.debug("Текущее количество фильмов: {}", service.findAll().size());
-
         return service.findAll();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        log.debug("Добавили фильм: {}", film);
+        log.info("Пришел POST запрос /films, с фильмом {}", film);
         service.create(film);
         return film;
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
+        log.info("Пришел Put запрос /films, с фильмом {}", film);
         service.update(film);
-            log.debug("Обновили фильм: {}", film);
-            return film;
+        return film;
     }
+
     @GetMapping("/{id}")
     public Film getFilmById(@PathVariable long id) {
+        log.info("Пришел Get запрос /films/{}",id);
         return service.getFilmById(id);
     }
 
-    @PutMapping("/{id}/like/{userId}")
-    public void addLikeByFilm(@PathVariable   long id ,@PathVariable long userId) {
-        service.addLikeByFilm(id, userId);
+    @PutMapping("/{id}/like/{filmId}")
+    public void addLikeByFilm(@PathVariable long id, @PathVariable long filmId) {
+        log.info("Пришел Put запрос /films/{}/like/{}",id,filmId);
+        service.addLikeByFilm(id, filmId);
     }
 
-    @DeleteMapping("/{id}/like/{userId}")
-    public void deleteLikeByFilm(@PathVariable long id ,@PathVariable long userId) {
-        service.deleteLikeByFilm(id, userId);
+    @DeleteMapping("/{id}/like/{filmId}")
+    public void deleteLikeByFilm(@PathVariable long id, @PathVariable long filmId) {
+        log.info("Пришел Delete запрос /films/{}/like/{}",id,filmId);
+        service.deleteLikeByFilm(id, filmId);
     }
+
     @GetMapping("/popular")
     public List<Film> getPopularFilms(@RequestParam(defaultValue = "10") int count) {
+        log.info("Пришел Get запрос /films/popular");
         return service.getPopularFilms(count);
     }
-
-
-
-
-
 
 
     private boolean validFilm(Film film) {
