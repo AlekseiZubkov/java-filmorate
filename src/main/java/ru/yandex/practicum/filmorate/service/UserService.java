@@ -54,20 +54,29 @@ public class UserService {
 
 
     public void addFriend(long id, long friendId) {
-        if (friendId <= 0 || id <= 0) {
-            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
+        if (friendId <= 0 || id <= 0 ) {
+            throw new NotFoundException(String.format("Некорректный ID № %d ", id));
         }
-        if (checkInList(id) && checkInList(id)) {
-            userStorage.getUsersMap().get(id).getFriends().add(friendId);
-            userStorage.getUsersMap().get(friendId).getFriends().add(id);
+        if (checkInList(id) && checkInList(friendId)) {
+            userStorage.getUserById(id).getFriends().add(friendId);
+            userStorage.getUserById(friendId).getFriends().add(id);
             log.info("Добавили в друзья  к пользователю с ID {},пользователя c ID {}  ", id, friendId);
+        }else {
+            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
         }
     }
 
     public void deleteFriend(long id, long friendId) {
-        userStorage.getUsersMap().get(id).getFriends().remove(friendId);
-        userStorage.getUsersMap().get(friendId).getFriends().remove(id);
+        if (friendId <= 0 || id <= 0 ) {
+            throw new NotFoundException(String.format("Некорректный ID № %d ", id));
+        }
+        if (checkInList(id) && checkInList(friendId)) {
+        userStorage.getUserById(id).getFriends().remove(friendId);
+        userStorage.getUserById(friendId).getFriends().remove(id);
         log.info("Удалили из друзей   пользователя с ID {},пользователя c ID {}  ", id, friendId);
+        }else {
+            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
+        }
     }
 
     public List<User> getUserFriends(long id) {
@@ -78,22 +87,20 @@ public class UserService {
     }
 
     public List<User> getCommonFriends(long id, long otherId) {     // Находим общих друзей, и складываем в List
-        checkInList(id);
-        checkInList(otherId);
-        List<User> list = userStorage.getUsers().stream()
-                .filter(x -> userStorage.getUsersMap().get(id).getFriends()
-                        .contains(x.getId())).filter(o -> userStorage.getUsersMap().get(otherId).getFriends()
-                        .contains(o.getId())).collect(Collectors.toList());
-        log.debug("Список общих друзей: {}", list);
-        return list;
+        if (checkInList(id) || checkInList(otherId)){
+            List<User> list = userStorage.getUsers().stream()
+                    .filter(x -> userStorage.getUsersMap().get(id).getFriends()
+                            .contains(x.getId())).filter(o -> userStorage.getUsersMap().get(otherId).getFriends()
+                            .contains(o.getId())).collect(Collectors.toList());
+            log.debug("Список общих друзей: {}", list);
+            return list;
+        }else {
+            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
+        }
     }
 
     private boolean checkInList(long id) {      //Проверка, что пользователь с таким ID есть в списке
-        if (userStorage.getUsersMap().containsKey(id)) {
-            return true;
-        } else {
-            throw new NotFoundException(String.format("Пользователь № %d не найден", id));
-        }
+        return userStorage.getUsersMap().containsKey(id);
     }
 
 }

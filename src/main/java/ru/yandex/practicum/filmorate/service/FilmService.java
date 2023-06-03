@@ -52,10 +52,15 @@ public class FilmService {
     }
 
     public void deleteLikeByFilm(long id, long userId) {
-        if (userId <= 0) {
-            throw new NotFoundException("Нет такого пользователя в списке");
+        if (id <= 0 || userId <= 0) {
+            throw new NotFoundException("Не корректный ID запроса");
         }
-        filmStorage.getFilmsMap().get(id).getLikes().remove(userId);
+        if (filmStorage.getFilmsMap().containsKey(id)){
+            filmStorage.getFilmById(id).getLikes().remove(userId);
+        }else {
+            throw new NotFoundException(String.format("Фильм № %d не найден", id));
+        }
+
     }
 
     public List<Film> getPopularFilms(int count) {
