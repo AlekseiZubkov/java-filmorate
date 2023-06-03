@@ -55,9 +55,9 @@ public class FilmService {
         if (id <= 0 || userId <= 0) {
             throw new NotFoundException("Не корректный ID запроса");
         }
-        if (filmStorage.getFilmsMap().containsKey(id)){
+        if (filmStorage.getFilmsMap().containsKey(id)) {
             filmStorage.getFilmById(id).getLikes().remove(userId);
-        }else {
+        } else {
             throw new NotFoundException(String.format("Фильм № %d не найден", id));
         }
 
