@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,9 +27,6 @@ public class UserService {
         if (user.getName() == null || user.getName().isEmpty()) {       //если имя не задано, то name=login
             user.setName(user.getLogin());
         }
-        if (user.getFriends() == null) {        //если списка нет, то присвоить пустой список
-            user.setFriends(new HashSet<>());
-        }
         user.setId(++id);
         userStorage.create(user);
         log.info("Создали пользователя: {}", user);
@@ -40,9 +36,6 @@ public class UserService {
     public void updateUser(User user) {
         if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
-        }
-        if (user.getFriends() == null) {        //если списка нет, то присвоить пустой список
-            user.setFriends(new HashSet<>());
         }
         if (checkInList(user.getId())) {
             userStorage.update(user);

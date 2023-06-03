@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,18 +21,12 @@ public class FilmService {
     }
 
     public void create(Film film) {
-        if (film.getLikes() == null) {        //если списка нет, то присвоить пустой список
-            film.setLikes(new HashSet<>());
-        }
         ++id;
         film.setId(id);
         filmStorage.create(film);
     }
 
     public void update(Film film) {
-        if (film.getLikes() == null) {        //если списка нет, то присвоить пустой список
-            film.setLikes(new HashSet<>());
-        }
         if (filmStorage.getFilmsMap().containsKey(film.getId())) {
             filmStorage.update(film);
         } else {
@@ -51,8 +44,10 @@ public class FilmService {
 
 
     public void addLikeByFilm(long id, long userId) {
-        if (checkInList(id) && checkInList(id)) {
+        if (filmStorage.getFilmsMap().containsKey(id)) {
             filmStorage.getFilmsMap().get(id).getLikes().add(userId);
+        } else {
+            throw new NotFoundException(String.format("Фильм № %d не найден", id));
         }
     }
 
@@ -68,13 +63,4 @@ public class FilmService {
                 .sorted((f1, f2) -> f2.getLikes().size() - f1.getLikes().size())
                 .limit(count).collect(Collectors.toList());
     }
-
-    private boolean checkInList(long id) {      //Проверка, что пользователь с таким ID есть в списке
-        if (filmStorage.getFilmsMap().containsKey(id)) {
-            return true;
-        } else {
-            throw new NotFoundException(String.format("Фильм № %d не найден", id));
-        }
-    }
-
 }
