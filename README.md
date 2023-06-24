@@ -11,6 +11,6 @@ FROM users;
 3. Получение всех фильмов которые лайкнул пользователь с id=1 :
 SELECT f.name 
 FROM users u
-JOIN likes l on u.id = l.user_id
-JOIN films f on l.film_id = f.id
+JOIN likes l ON u.id = l.user_id
+JOIN films f ON l.film_id = f.id
 WHERE u.id=1; 
