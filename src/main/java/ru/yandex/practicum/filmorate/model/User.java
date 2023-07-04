@@ -31,4 +31,6 @@ public class User {
     private Set<Long> friends = new HashSet<>();
 
 
+    public User(long id, String name, String login, String email, LocalDate birthday) {
+    }
 }

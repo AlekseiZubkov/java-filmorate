@@ -24,7 +24,22 @@ public class UserService {
     long id = 0;
 
     public List<User> findAll() {
-        return userStorage.getUsers();
+/*        return  jdbcTemplate.query("select * from users",(rs, rowNum) ->  new User(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("login"),
+                rs.getString("email"),
+                rs.getDate("birthday").toLocalDate()
+        ));
+
+        //return userStorage.getUsers();*/
+        return   jdbcTemplate.query("select * from users",(rs, rowNum) ->   User.builder()
+                .id(rs.getLong("id"))
+                .name(rs.getString("name"))
+                .login(rs.getString("login"))
+                .email(rs.getString("email"))
+                .birthday(rs.getDate("birthday").toLocalDate())
+                .build());
     }
 
     public User create(User user) {
