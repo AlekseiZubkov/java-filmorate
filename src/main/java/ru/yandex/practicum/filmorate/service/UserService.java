@@ -2,11 +2,15 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +20,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserStorage userStorage;
-
+    private  final JdbcTemplate jdbcTemplate;
     long id = 0;
 
     public List<User> findAll() {
@@ -46,11 +50,26 @@ public class UserService {
     }
 
     public User getUserById(long id) {
-        if (!userStorage.getUsersMap().containsKey(id)) {
+        /*if (!userStorage.getUsersMap().containsKey(id)) {
             throw new NotFoundException(String.format("Пользователь № %d не найден", id));
-        }
-        return userStorage.getUserById(id);
-    }
+        }*/
+        User user = jdbcTemplate.queryForObject("select * from users where id = ?",new RowMapper<User>(){
+            @Override
+            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
+                User user1 = new User();
+                user1.setId(rs.getLong("id"));
+                user1.setName(rs.getString("name"));
+                user1.setEmail(rs.getString("email"));
+                user1.setLogin(rs.getString("login"));
+                user1.setBirthday(rs.getDate("birthday").toLocalDate());
+
+                return user1;
+            }
+        },id);
+                return user;
+            }
+
+
 
 
     public void addFriend(long id, long friendId) {
