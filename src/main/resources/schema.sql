@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS friends (
                            user_id bigint,
-                           friends_id integer,
+                           friend_id integer,
                            confirmation_friendship boolean
 );
 
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS films_genre (
 
 ALTER TABLE friends ADD FOREIGN KEY (user_id) REFERENCES users (id);
 
-ALTER TABLE friends ADD FOREIGN KEY (friends_id) REFERENCES users (id);
+ALTER TABLE friends ADD FOREIGN KEY (friend_id) REFERENCES users (id);
 
 ALTER TABLE films ADD FOREIGN KEY (mpa_id) REFERENCES mpa (mpa_id);
 
