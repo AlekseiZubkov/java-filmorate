@@ -18,4 +18,10 @@ public interface UserStorage {
 
     Map<Long, User> getUsersMap();
 
+    List<User> getFriends(long id);
+
+    List<User> getCommonFriends(long id, long otherId);
+
+
+
 }
