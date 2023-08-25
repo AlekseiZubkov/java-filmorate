@@ -46,10 +46,10 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public List<User> getCommonFriends(long id,long otherId) {
-                  return getUsers().stream()
-                    .filter(x -> getUsersMap().get(id).getFriends()
-                            .contains(x.getId())).filter(o -> getUsersMap().get(otherId).getFriends()
-                            .contains(o.getId())).collect(Collectors.toList());
+    public List<User> getCommonFriends(long id, long otherId) {
+        return getUsers().stream()
+                .filter(x -> getUsersMap().get(id).getFriends()
+                        .contains(x.getId())).filter(o -> getUsersMap().get(otherId).getFriends()
+                        .contains(o.getId())).collect(Collectors.toList());
     }
 }

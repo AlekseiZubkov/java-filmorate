@@ -11,7 +11,7 @@ import java.util.Map;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
-    private  final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
     private final Map<Long, Film> films = new HashMap<>();
 
     public InMemoryFilmStorage(JdbcTemplate jdbcTemplate) {
