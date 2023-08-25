@@ -25,9 +25,9 @@ public class UserDbStorage implements UserStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
-        Map<String, String> params = Map.of("name", user.getName()
-                , "login", user.getLogin(), "email", user.getEmail()
-                , "birthday", user.getBirthday().toString()
+        Map<String, String> params = Map.of("name", user.getName(),
+                 "login", user.getLogin(), "email", user.getEmail(),
+                 "birthday", user.getBirthday().toString()
         );
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         user.setId((Long) id);
@@ -85,7 +85,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public List<User> getCommonFriends(long id, long otherId) {
         String sql = "SELECT * FROM USERS WHERE ID IN( " +      //все поля из пользователя
-                "SELECT DISTINCT(FRIEND_ID) FROM FRIENDS WHERE USER_ID = ? " +      //уникальные данные из друзей 
+                "SELECT DISTINCT(FRIEND_ID) FROM FRIENDS WHERE USER_ID = ? " +      //уникальные данные из друзей
                 " AND FRIEND_ID IN (SELECT FRIEND_ID FROM FRIENDS WHERE USER_ID = ? )" +
                 " );";
 
