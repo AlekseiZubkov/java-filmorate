@@ -59,7 +59,7 @@ public class UserService {
             throw new NotFoundException(String.format("Некорректный ID № %d ", id));
         }
         if (checkInList(id) && checkInList(friendId)) {
-            userFrendsStorage.addFriend(id,friendId);
+            userFrendsStorage.addFriend(id, friendId);
             log.info("Добавили в друзья  к пользователю с ID {},пользователя c ID {}  ", id, friendId);
         } else {
             throw new NotFoundException(String.format("Пользователь № %d не найден", id));
@@ -71,7 +71,7 @@ public class UserService {
             throw new NotFoundException(String.format("Некорректный ID № %d ", id));
         }
         if (checkInList(id) && checkInList(friendId)) {
-            userFrendsStorage.deleteFriend(id,friendId);
+            userFrendsStorage.deleteFriend(id, friendId);
             log.info("Удалили из друзей   пользователя с ID {},пользователя c ID {}  ", id, friendId);
         } else {
             throw new NotFoundException(String.format("Пользователь № %d не найден", id));
@@ -89,7 +89,7 @@ public class UserService {
     public List<User> getCommonFriends(long id, long otherId) {     // Находим общих друзей, и складываем в List
         if (checkInList(id) || checkInList(otherId)) {
 
-          List<User> list = userStorage.getCommonFriends(id,otherId);
+            List<User> list = userStorage.getCommonFriends(id, otherId);
             log.debug("Список общих друзей: {}", list);
             return list;
         } else {
