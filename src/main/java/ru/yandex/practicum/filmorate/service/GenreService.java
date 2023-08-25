@@ -15,6 +15,7 @@ public class GenreService {
     public List<Genre> findAll() {
         return genreStorage.getGenreAll();
     }
+
     public Genre genreById(long id) {
         return genreStorage.getGenreById(id);
     }
