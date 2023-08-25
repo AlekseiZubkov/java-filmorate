@@ -32,8 +32,8 @@ public class FilmDbStorage implements FilmStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate.getDataSource())
                 .withTableName("films")
                 .usingGeneratedKeyColumns("id");
-        Map<String, Object> params = Map.of("name", film.getName()
-                , "description", film.getDescription(), "releasedate", film.getReleaseDate().toString(),
+        Map<String, Object> params = Map.of("name", film.getName(),
+                 "description", film.getDescription(), "releasedate", film.getReleaseDate().toString(),
                 "duration", film.getDuration(), "mpa_id", film.getMpa().getId()
         );
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
@@ -51,8 +51,8 @@ public class FilmDbStorage implements FilmStorage {
         if (checkId(film.getId())) {
             String sql = "UPDATE films SET name = ?, description = ?, duration = ?, releaseDate = ?, mpa_id = ? " +
                     " WHERE id = ? ";
-            jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getDuration()
-                    , Date.valueOf(film.getReleaseDate()), film.getMpa().getId(), film.getId()
+            jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getDuration(),
+                     Date.valueOf(film.getReleaseDate()), film.getMpa().getId(), film.getId()
             );
         } else {
             throw new NotFoundException("Нет такого фильма в списке");
