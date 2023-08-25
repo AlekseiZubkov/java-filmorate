@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.storage.user.friend.UserFrendsStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

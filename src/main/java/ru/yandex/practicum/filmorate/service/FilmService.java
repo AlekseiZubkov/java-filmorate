@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.film.genre.GenreDao;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
