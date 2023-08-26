@@ -50,16 +50,18 @@ public class GenreDaoImpl implements GenreDao {
         }
         throw new NotFoundException("Жанр не найден");
     }
+
     @Override
     public List<Genre> getGenreFilmById(long id) {
 
-         String sql = "SELECT ge.genre_id, ge.genre_NAME FROM films_genre fg " +
+        String sql = "SELECT ge.genre_id, ge.genre_NAME FROM films_genre fg " +
                 "LEFT JOIN genre ge ON fg.genre_id = ge.genre_id " +
                 "WHERE film_id = ?";
 
-        List<Genre> genreList = jdbcTemplate.query(sql, genreRowMapper(),id);
+        List<Genre> genreList = jdbcTemplate.query(sql, genreRowMapper(), id);
         return genreList;
     }
+
     @Override
     public void loadGenres(List<Film> films) {
 
