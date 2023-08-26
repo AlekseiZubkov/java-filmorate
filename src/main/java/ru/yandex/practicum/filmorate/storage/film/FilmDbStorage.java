@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
+import ru.yandex.practicum.filmorate.storage.film.genre.GenreDao;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -21,9 +22,11 @@ import java.util.*;
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
 
+    private final GenreDao genreStorage;
 
-    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmStorage filmStorage, GenreDao genreStorage) {
         this.jdbcTemplate = jdbcTemplate;
+        this.genreStorage = genreStorage;
     }
 
     @Override
@@ -33,7 +36,7 @@ public class FilmDbStorage implements FilmStorage {
                 .withTableName("films")
                 .usingGeneratedKeyColumns("id");
         Map<String, Object> params = Map.of("name", film.getName(),
-                 "description", film.getDescription(), "releasedate", film.getReleaseDate().toString(),
+                "description", film.getDescription(), "releasedate", film.getReleaseDate().toString(),
                 "duration", film.getDuration(), "mpa_id", film.getMpa().getId()
         );
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
@@ -52,27 +55,34 @@ public class FilmDbStorage implements FilmStorage {
             String sql = "UPDATE films SET name = ?, description = ?, duration = ?, releaseDate = ?, mpa_id = ? " +
                     " WHERE id = ? ";
             jdbcTemplate.update(sql, film.getName(), film.getDescription(), film.getDuration(),
-                     Date.valueOf(film.getReleaseDate()), film.getMpa().getId(), film.getId()
+                    Date.valueOf(film.getReleaseDate()), film.getMpa().getId(), film.getId()
             );
         } else {
             throw new NotFoundException("Нет такого фильма в списке");
         }
-        //очищаем
-        //заполняем таблицу жанров
-        // Если ID  не пусты то  добавляем новые
-        if (film.getGenres().size() != 0) {
-            jdbcTemplate.update("DELETE FROM films_genre WHERE FILM_ID  = ?;", film.getId());
-            List<Genre> uniGenres = new ArrayList<>(new HashSet<>(film.getGenres()));
-            Collections.reverse(uniGenres);
-            film.setGenres(uniGenres);
-            for (Genre genres : uniGenres) {
-                String sql = "INSERT INTO films_genre (FILM_ID, GENRE_ID) VALUES (?,?);";
-                jdbcTemplate.update(sql, film.getId(), genres.getId());
+        if (film.getGenres().size() > 0) {
+            List<Genre> currentGenres = genreStorage.getGenreFilmById(film.getId()); // Получаем список жанров,
+            // присутствующих в базе данных
+            List<Genre> genresToRemove = new ArrayList<>(currentGenres);
+            genresToRemove.removeAll(film.getGenres());
+            for (Genre genre : genresToRemove) {
+                jdbcTemplate.update("DELETE FROM films_genre WHERE FILM_ID = ? AND GENRE_ID = ?;",
+                        film.getId(), genre.getId());
+            }
+            List<Genre> newGenres = new ArrayList<>(new HashSet<>(film.getGenres()));
+            newGenres.removeAll(currentGenres);
+            Collections.reverse(newGenres);
+            film.setGenres(newGenres);
+            for (Genre genre : newGenres) {
+                jdbcTemplate.update("INSERT INTO films_genre (FILM_ID, GENRE_ID) VALUES (?,?);", film.getId(),
+                        genre.getId());
             }
         } else {
-            jdbcTemplate.update("DELETE FROM films_genre WHERE FILM_ID  = ?;", film.getId());
+            jdbcTemplate.update("DELETE FROM films_genre WHERE FILM_ID = ?;", film.getId());
         }
+
     }
+
 
     @Override
     public void delete(Film film) {
@@ -169,11 +179,6 @@ public class FilmDbStorage implements FilmStorage {
             film.setDescription(rs.getString("description"));
             film.setReleaseDate(rs.getDate("releaseDate").toLocalDate());
             film.setDuration(rs.getInt("duration"));
-   /*         do{
-                Genre genre = new Genre(rs.getInt("ganre_id"), rs.getString("genre_name"));
-                film.getGenres().add(genre.getId());
-            }while (rs.next());*/
-
             film.setMpa(new Mpa(rs.getInt("mpa_id"), rs.getString("mpa_name")));
 
             return film;

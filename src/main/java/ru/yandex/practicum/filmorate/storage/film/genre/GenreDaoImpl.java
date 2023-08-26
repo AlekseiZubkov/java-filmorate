@@ -50,7 +50,16 @@ public class GenreDaoImpl implements GenreDao {
         }
         throw new NotFoundException("Жанр не найден");
     }
+    @Override
+    public List<Genre> getGenreFilmById(long id) {
 
+         String sql = "SELECT ge.genre_id, ge.genre_NAME FROM films_genre fg " +
+                "LEFT JOIN genre ge ON fg.genre_id = ge.genre_id " +
+                "WHERE film_id = ?";
+
+        List<Genre> genreList = jdbcTemplate.query(sql, genreRowMapper(),id);
+        return genreList;
+    }
     @Override
     public void loadGenres(List<Film> films) {
 
@@ -61,18 +70,11 @@ public class GenreDaoImpl implements GenreDao {
             //Получаем из id фильма и извлекли по нему из мапы значение)
             if (!rs.wasNull()) {
                 Film film = mapFilms.get(rs.getLong("FILM_ID"));
-//                System.out.println("FILM_ID ======= " + rs.getInt("FILM_ID"));
-//                System.out.println("ids.get(rs.getInt ======= " + mapFilms.get(rs.getInt("FILM_ID")));
-//                System.out.println("rs===== " + rs);
-//                System.out.println("ids " + mapFilms);
-//                System.out.println("FILM1 ======= " + film);
                 if (film != null) {
-                    film.getGenres().add(new Genre(rs.getInt("genre_id"), rs.getString("genre_name"))); // добав
-                    System.out.println("FILM ======= " + film);
+                    film.getGenres().add(new Genre(rs.getInt("genre_id"), rs.getString("genre_name")));
                 }
-                System.out.println("FILM ККККККККККККККК ");
             }
-            //Преобразуем коллекцию типа Film к Integer и в массив, так как передавать требуется именно его
+
         }, films.stream().map(Film::getId).toArray());
     }
 }

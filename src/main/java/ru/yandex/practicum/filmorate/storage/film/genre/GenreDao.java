@@ -10,5 +10,7 @@ public interface GenreDao {
 
     Genre getGenreById(long id);
 
+    public List<Genre> getGenreFilmById(long id);
+
     void loadGenres(List<Film> films);
 }

@@ -81,14 +81,10 @@ public class UserService {
     public List<User> getUserFriends(long id) {
         log.info("Вернули список друзей пользователя с ID {}", id);
         return userStorage.getFriends(id);
-//        return userStorage.getUsers().stream()
-//                .filter(o -> userStorage.getUserById(id).getFriends().contains(o.getId()))
-//                .collect(Collectors.toList());
     }
 
     public List<User> getCommonFriends(long id, long otherId) {     // Находим общих друзей, и складываем в List
         if (checkInList(id) || checkInList(otherId)) {
-
             List<User> list = userStorage.getCommonFriends(id, otherId);
             log.debug("Список общих друзей: {}", list);
             return list;

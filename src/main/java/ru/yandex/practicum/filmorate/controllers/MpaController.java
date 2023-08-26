@@ -27,7 +27,7 @@ public class MpaController {
 
     @GetMapping("/{id}")
     public Mpa mpaById(@PathVariable("id") long id) {
-        log.info("Пришел GET запрос /mpa/{id}");
+        log.info("Пришел GET запрос /mpa/{}",id);
         return mpaService.mpaById(id);
     }
 

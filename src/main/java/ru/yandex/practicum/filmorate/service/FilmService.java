@@ -53,7 +53,6 @@ public class FilmService {
     }
 
     public List<Film> getPopularFilms(int count) {
-        System.out.println("COOOOOOOOOOOUNT === " + count);
         return filmStorage.getPopularFilms(count);
     }
 }

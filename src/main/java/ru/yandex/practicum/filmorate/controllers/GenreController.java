@@ -27,7 +27,7 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public Genre mpaById(@PathVariable("id") long id) {
-        log.info("Пришел GET запрос /genres/{id}");
+        log.info("Пришел GET запрос /genres/{}",id);
         return genreService.genreById(id);
     }
 
