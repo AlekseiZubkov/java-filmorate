@@ -20,17 +20,7 @@ class GenreDaoImplTest {
     private final GenreDao genreStorage;
     private final JdbcTemplate jdbcTemplate;
 
-    @AfterEach
-    void afterEach() {
-        String sql =
-                "delete from users;\n" +
-                        "delete from friends;\n" +
-                        "delete from films;\n" +
-                        "delete from genre;\n" +
-                        "delete from likes;\n" +
-                        "delete from films_genre;";
-        jdbcTemplate.update(sql);
-    }
+
 
     @Test
     void getGenreAll() {
