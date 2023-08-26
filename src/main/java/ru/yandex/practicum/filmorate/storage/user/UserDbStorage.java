@@ -26,8 +26,8 @@ public class UserDbStorage implements UserStorage {
                 .withTableName("users")
                 .usingGeneratedKeyColumns("id");
         Map<String, String> params = Map.of("name", user.getName(),
-                 "login", user.getLogin(), "email", user.getEmail(),
-                 "birthday", user.getBirthday().toString()
+                "login", user.getLogin(), "email", user.getEmail(),
+                "birthday", user.getBirthday().toString()
         );
         Number id = simpleJdbcInsert.executeAndReturnKey(params);
         user.setId((Long) id);
@@ -43,7 +43,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void delete(User user) {
-        String sql = "DELETE FROM users" +
+        String sql = "DELETE FROM users " +
                 "WHERE id = ?;";        // текст SQL запроса
         jdbcTemplate.update(sql, user.getId());
     }
@@ -105,14 +105,4 @@ public class UserDbStorage implements UserStorage {
         };
 
     }
-/*    public static boolean hasColumn(ResultSet rs, String columnName) throws SQLException {
-        ResultSetMetaData rsmd = rs.getMetaData();
-        int columns = rsmd.getColumnCount();
-        for (int x = 1; x <= columns; x++) {
-            if (columnName.equals(rsmd.getColumnName(x))) {
-                return true;
-            }
-        }
-        return false;
-    }*/
 }
