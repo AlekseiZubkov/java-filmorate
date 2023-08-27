@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -10,7 +11,12 @@ import java.util.Map;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
+    private final JdbcTemplate jdbcTemplate;
     private final Map<Long, Film> films = new HashMap<>();
+
+    public InMemoryFilmStorage(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public void create(Film film) {
         films.put(film.getId(), film);
@@ -30,6 +36,16 @@ public class InMemoryFilmStorage implements FilmStorage {
         return new ArrayList<>(films.values());
     }
 
+    @Override
+    public void addLikeByFilm(long id, long userId) {
+
+    }
+
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        return null;
+    }
+
     public Map<Long, Film> getFilmsMap() {
         return films;
     }
@@ -38,4 +54,9 @@ public class InMemoryFilmStorage implements FilmStorage {
         return films.get(id);
     }
 
+    @Override
+    public void deleteLikeByFilm(long id, long userId) {
+
+    }
 }
+

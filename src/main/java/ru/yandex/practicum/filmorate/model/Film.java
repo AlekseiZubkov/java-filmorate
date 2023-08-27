@@ -10,8 +10,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Builder
 @NoArgsConstructor
@@ -29,4 +28,8 @@ public class Film {
     private int duration;
     @Builder.Default
     private Set<Long> likes = new HashSet<>();
+    private Mpa mpa;
+    @Builder.Default
+    private List<Genre> genres = new ArrayList<>();
+
 }

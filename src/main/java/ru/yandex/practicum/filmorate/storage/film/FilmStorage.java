@@ -15,8 +15,13 @@ public interface FilmStorage {
 
     List<Film> getFilms();
 
+    void addLikeByFilm(long id, long userId);
+
+    public List<Film> getPopularFilms(int count);
 
     Film getFilmById(long id);
+
+    void deleteLikeByFilm(long id, long userId);
 
     Map<Long, Film> getFilmsMap();
 }

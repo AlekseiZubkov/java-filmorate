@@ -40,7 +40,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public User findPost(@PathVariable("id") long id) {
-        log.info("Пришел Get запрос /users");
+        log.info("Пришел Get запрос /users/{}",id);
         return service.getUserById(id);
     }
 

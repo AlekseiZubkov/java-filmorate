@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+import ru.yandex.practicum.filmorate.storage.user.friend.UserFrendsStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserStorage userStorage;
+    private final UserFrendsStorage userFrendsStorage;
 
     long id = 0;
 
@@ -27,7 +28,7 @@ public class UserService {
         if (user.getName() == null || user.getName().isEmpty()) {       //если имя не задано, то name=login
             user.setName(user.getLogin());
         }
-        user.setId(++id);
+        //user.setId(++id);
         userStorage.create(user);
         log.info("Создали пользователя: {}", user);
         return user;
@@ -58,8 +59,7 @@ public class UserService {
             throw new NotFoundException(String.format("Некорректный ID № %d ", id));
         }
         if (checkInList(id) && checkInList(friendId)) {
-            userStorage.getUserById(id).getFriends().add(friendId);
-            userStorage.getUserById(friendId).getFriends().add(id);
+            userFrendsStorage.addFriend(id, friendId);
             log.info("Добавили в друзья  к пользователю с ID {},пользователя c ID {}  ", id, friendId);
         } else {
             throw new NotFoundException(String.format("Пользователь № %d не найден", id));
@@ -71,8 +71,7 @@ public class UserService {
             throw new NotFoundException(String.format("Некорректный ID № %d ", id));
         }
         if (checkInList(id) && checkInList(friendId)) {
-            userStorage.getUserById(id).getFriends().remove(friendId);
-            userStorage.getUserById(friendId).getFriends().remove(id);
+            userFrendsStorage.deleteFriend(id, friendId);
             log.info("Удалили из друзей   пользователя с ID {},пользователя c ID {}  ", id, friendId);
         } else {
             throw new NotFoundException(String.format("Пользователь № %d не найден", id));
@@ -80,18 +79,13 @@ public class UserService {
     }
 
     public List<User> getUserFriends(long id) {
-        log.info("Вернули список друзей   пользователя с ID {}", id);
-        return userStorage.getUsers().stream()
-                .filter(o -> userStorage.getUserById(id).getFriends().contains(o.getId()))
-                .collect(Collectors.toList());
+        log.info("Вернули список друзей пользователя с ID {}", id);
+        return userStorage.getFriends(id);
     }
 
     public List<User> getCommonFriends(long id, long otherId) {     // Находим общих друзей, и складываем в List
         if (checkInList(id) || checkInList(otherId)) {
-            List<User> list = userStorage.getUsers().stream()
-                    .filter(x -> userStorage.getUsersMap().get(id).getFriends()
-                            .contains(x.getId())).filter(o -> userStorage.getUsersMap().get(otherId).getFriends()
-                            .contains(o.getId())).collect(Collectors.toList());
+            List<User> list = userStorage.getCommonFriends(id, otherId);
             log.debug("Список общих друзей: {}", list);
             return list;
         } else {

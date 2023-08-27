@@ -14,10 +14,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
+
 
     private long id;
     @NotBlank(message = "Email пуст")
@@ -31,4 +32,5 @@ public class User {
     private LocalDate birthday;
     @Builder.Default
     private Set<Long> friends = new HashSet<>();
+
 }
